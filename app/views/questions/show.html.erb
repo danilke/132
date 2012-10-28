@@ -1,0 +1,107 @@
+<p id="notice"><%= notice %></p>
+
+
+<%= image_tag @question.avatar.url(:medium) %>
+
+<p>
+  <b>Title:</b>
+  <%= @question.title %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= @question.description %>
+</p>
+
+<p>
+  <b>User name:</b>
+  <%= link_to @user_q.name, user_path(:id => @user_q.id) %>
+<p> <%= image_tag @user_q.avatar.url(:thumb) %></p>
+</p>
+
+<h3>Comments</h3>
+<% @comments.each do |comment|%>
+
+<p> <%= comment.title%>  <%= comment.comment%> Posted by: <%= User.find(comment.user_id).name %></p>
+
+<p> --------------------- </p>
+<% end%>
+
+
+ <%= form_tag "/questions/add_new_comment" do %>
+    <%= hidden_field_tag "user_id", current_user.id %>
+    <%= hidden_field_tag "id", @question.id %>
+    <%= text_area_tag "comment[comment]" %>
+    <%= submit_tag " Comment" %>
+ <% end %>
+
+
+
+
+<!--            Answers                                           -->
+
+ 
+ <h3>Answers(<%= @answers.count%>)</h3>
+<% @answers.each_with_index do |answer, i|%>
+		
+
+		<h1>#<%= i+1%></h1>
+		    <p><%= (image_tag User.find(answer.user_id).avatar.url(:thumb)) unless User.find(answer.user_id).avatar.url == '/avatars/original/missing.png' %><%= link_to User.find(answer.user_id).name, user_path(:id => answer.user_id) %></p>
+
+		<p> <%= answer.title%></p>
+		<p><%=answer.description%></p>
+
+		<p><%= (image_tag answer.avatar.url(:medium)) unless answer.avatar.url == '/avatars/original/missing.png' %></p>
+
+
+
+		<h3><%= "Comments:" unless answer.comments.count == 0%></h3>
+		<% answer.comments.each do |comment|%>
+
+			<p>    <%= (" commented by:"+ User.find(comment.user_id).name) unless comment.user_id.blank? %></p>
+			<%= comment.comment%>
+
+			<p> --------------------- </p>
+		<% end%>
+			 <%= form_tag "/answers/add_new_comment" do %>
+			    <%= hidden_field_tag "comment[user_id]", current_user.id %>
+			    <%= hidden_field_tag "id", answer.id %>
+			    <%= text_area_tag "comment[comment]" %>
+			    <%= submit_tag " Comment" %>
+			 <% end %>
+<%end%>
+<p></p>
+ <a href="#", id = "arr"> Click me to answer</a>
+<div id="form_id">
+<%= form_tag "/questions/add_new_answer",  :multipart => true  do%>
+
+  <%= file_field_tag :avatar %>
+    <%= hidden_field_tag "user_id", current_user.id %>
+    <%= hidden_field_tag "id", @question.id %>
+
+  <div class="field">
+    <%= label_tag :title %><br />
+    <%= text_field_tag :title %>
+  </div>
+  <div class="field">
+    <%= label_tag :description %><br />
+    <%= text_area_tag :description %>
+  </div>
+  <div class="actions">
+    <%= submit_tag %>
+  </div>
+<% end %>
+</div>
+
+
+<script>
+$(document).ready(function() {
+
+ $('#form_id').hide(); //Initially form wil be hidden.
+
+  $('#arr').click(function() {
+   $('#form_id').show();//Form shows on button click
+
+   });
+ });
+</script>

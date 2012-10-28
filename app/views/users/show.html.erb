@@ -1,0 +1,8 @@
+<p><%= link_to "Edit", edit_user_registration_path%></p>
+
+
+<p><h3>Name</h3> <%= @user.name%>
+ <p>
+ <h3>	Location:</h3><%= @user.location %></p>
+
+ <%=image_tag  @user.avatar.url%>
